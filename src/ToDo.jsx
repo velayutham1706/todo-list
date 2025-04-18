@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 function ToDo() {
-
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
 
@@ -12,7 +11,8 @@ function ToDo() {
 
   function addTask() {
     if (newTask.trim() !== "") {
-      setTasks(prevTask => [...prevTask, newTask]);
+      // Task object with text and completed status
+      setTasks(prevTask => [...prevTask, { text: newTask, completed: false }]);
       setNewTask("");
       toast.success("Added successfully!");
     } else {
@@ -46,28 +46,60 @@ function ToDo() {
     }
   }
 
+  function toggleCompleted(index) {
+    const updatedTasks = [...tasks];
+    updatedTasks[index].completed = !updatedTasks[index].completed;
+    setTasks(updatedTasks);
+    
+    if (updatedTasks[index].completed) {
+      toast.success("Task marked as completed!");
+    } else {
+      toast.info("Task marked as incomplete.");
+    }
+  }
+
   return (
-    <div className = "to-do-list">
+    <div className="to-do-list">
       <div>
         <h1>To Do List</h1>
-        <input type = "text" placeholder = "Enter a task..." value = {newTask} onChange = {handleInputChange}>
-        </input>
-        <button className = "add-button" onClick = {addTask}>
+        <input 
+          type="text" 
+          placeholder="Enter a task..." 
+          value={newTask} 
+          onChange={handleInputChange}
+        />
+        <button className="add-button" onClick={addTask}>
           Add
         </button>
       </div>
-
       <ol>
-        {tasks.map((task, index) =>
-            <li key = {index}>
-                <span className = "text">{task}</span>
-                <button className = "delete-button" onClick = {() => deleteTask(index)}>
-🅧</button>
-                <button className = "move-button" onClick = {() => moveTaskUp(index)}>↑</button>
-                <button className = "move-button" onClick = {() => moveTaskDown(index)}>↓
-</button>
-            </li>
-        )}
+        {tasks.map((task, index) => (
+          <li key={index}>
+            <span 
+              className={`text ${task.completed ? "completed" : ""}`}
+              style={{ textDecoration: task.completed ? 'line-through' : 'none' }}
+            >
+              {task.text}
+            </span>
+            
+            <button 
+              className={`complete-button ${task.completed ? "undo-button" : ""}`} 
+              onClick={() => toggleCompleted(index)}
+            >
+              {task.completed ? "↻" : "✓"}
+            </button>
+            
+            <button className="delete-button" onClick={() => deleteTask(index)}>
+              🅧
+            </button>
+            <button className="move-button" onClick={() => moveTaskUp(index)}>
+              ↑
+            </button>
+            <button className="move-button" onClick={() => moveTaskDown(index)}>
+              ↓
+            </button>
+          </li>
+        ))}
       </ol>
     </div>
   );

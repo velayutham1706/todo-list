@@ -76,6 +76,18 @@ li {
     padding: 8px 12px;
 }
 
+.complete-button {
+    margin-top: 9px;
+    background: transparent;
+    border: none;
+    font-size: 1.5em;
+}
+
+.complete-button:hover {
+    color: red;
+    scale: 1.01;
+}
+
 .toast-progress {
     background: black; 
 }
